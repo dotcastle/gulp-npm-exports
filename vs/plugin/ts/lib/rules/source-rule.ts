@@ -166,7 +166,7 @@ class SourceRule extends Rule {
 		// Process
 		return Utils.readJson(packageJsonPath)
 			.then(packageJson => {
-				mainFiles = Utils.ensureArray(packageJson['files'], s => Utils.trimAdjustString(s, undefined, undefined, undefined, undefined));
+				mainFiles = Utils.ensureArray(packageJson['main'], s => Utils.trimAdjustString(s, undefined, undefined, undefined, undefined));
 				if (mainFiles && (mainFiles.length > 0)) {
 					executionContext.moduleFiles[packageName] = mainFiles;
 					return mainFiles;

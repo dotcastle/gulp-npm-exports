@@ -36,6 +36,6 @@
 	},
 
 	"exports": [
-		{ "from": "angular2", "filter": "#jsFilter", "move": "#js", "overridingMovePackageName": "angular" }
+		{ "from": "lodash", "filter": "#jsFilter", "move": "#jsNoPkg" }
 	]
 }

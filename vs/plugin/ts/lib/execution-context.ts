@@ -1,5 +1,6 @@
 ﻿import stream = require('stream');
 import path = require('path');
+import fs = require('fs');
 import Q = require('q');
 import File = require('vinyl');
 var multistream = <Function>require('multistream');
@@ -55,14 +56,14 @@ class ExecutionContext {
 				Logger.log(LogType.Information, 'Analyzing package.json contents...');
 
 				// Get all package names
-				this.moduleNames = Enumerable.from(Utils.getProperties(packageJson.dependencies))
-					.select((p: IKeyValuePair<string, any>) => { return Utils.trimAdjustString(p.key, null, null, null, null); })
-					.where((p: string) => !!p)
-					.toArray();
+				var nmDir = path.resolve(this.nodeModulesDirectory);
+				this.moduleNames = fs.readdirSync(nmDir).filter((file: string) => {
+					return (file !== '.') && (file !== '..') && fs.statSync(path.join(nmDir, file)).isDirectory();
+				});
 
 				// Reject if no package names
 				if (this.moduleNames.length === 0) {
-					Logger.log(LogType.Warning, 'No packages found in the package.json (path: \'{0}\')', file.path);
+					Logger.log(LogType.Warning, 'No packages found in the node_modules (path: \'{0}\')', nmDir);
 					return Utils.rejectedPromise();
 				}
 				// Check external exports file

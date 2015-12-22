@@ -181,7 +181,8 @@ class ExecutionContext {
 					return xObj || undefined;
 				});
 				if ((this.exports === null) || (this.exports.length === 0)) {
-					return Utils.rejectedPromise(new Error('No valid exports present in the npm exports'));
+					this.exports = [];
+					Logger.log(LogType.Warning, 'No valid exports present in the npm exports');
 				}
 
 				// Return
@@ -190,6 +191,11 @@ class ExecutionContext {
 
 			// Resolve all exports
 			.then(() => {
+				// Return if no exports
+				if (this.exports.length === 0) {
+					return Utils.resolvedPromise();
+				}
+
 				// Resolve all export rule src
 				Logger.log(LogType.Information, 'Resolving export directive sources...');
 				this.moduleFiles = {};
@@ -198,6 +204,11 @@ class ExecutionContext {
 
 			// Transform
 			.then(() => {
+				// Return if no exports
+				if (this.exports.length === 0) {
+					return Utils.resolvedPromise();
+				}
+
 				// Log
 				Logger.log(LogType.Information, 'Beginning transformations...');
 
